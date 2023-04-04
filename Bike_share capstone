@@ -172,3 +172,156 @@ Monday		751011
 
 
 Continue with R to Visualize and 
+
+
+#Total rides per ride type and user type
+Bike_update %>%
+  group_by(User_type, Ride_type) %>%
+  summarise(Number_of_rides = n()
+            ,average_duration = mean(Ride_length)) %>%
+  arrange(User_type, Ride_type) %>%
+  ggplot(aes(x = Ride_type, y = Number_of_rides, fill = User_type)) +
+  geom_col(position = "dodge", colour = "black") +
+  geom_text(
+    aes(label = Number_of_rides),
+    colour = "white", size = 3,
+    vjust = 1.5, position = position_dodge(.9)
+  ) + scale_fill_manual(values = c("#176fb3", "#0c3b5e"))
+  
+  #AVG rides per ride type and user type per min
+Bike_update %>%
+  group_by(User_type, Ride_type) %>%
+  summarise(Number_of_rides = n()
+            ,average_duration = mean(Ride_length)) %>%
+  arrange(User_type, Ride_type) %>%
+  ggplot(aes(x = Ride_type, y = average_duration, fill = User_type)) +
+  geom_col(position = "dodge", colour = "black", width = 0.8) +
+  geom_text(
+    aes(label = round(average_duration, 1)),
+    colour = "white", size = 3,
+    vjust = 1.5, position = position_dodge(.9)
+  ) + scale_fill_manual(values = c("#176fb3", "#0c3b5e"))
+  
+  # Number of rides per Weekdays
+Bike_update %>%
+  group_by(User_type, Day_of_week) %>%
+  summarise(Number_of_rides = n()
+            ,average_duration = mean(Ride_length)) %>%
+  arrange(User_type, Day_of_week)%>%
+  ggplot(aes(x = Day_of_week, y = Number_of_rides,fill = User_type)) +
+  geom_col(position = "dodge", colour = "black", width = 0.9) +
+  geom_text(
+    aes(label = round(Number_of_rides, 1)),
+    colour = "white", size = 2,
+    vjust = 1.5, position = position_dodge(.8)
+  ) + scale_fill_manual(values = c("#176fb3", "#0c3b5e"))
+
+
+# Number of rides per Weekdays
+Bike_update %>%
+  group_by(User_type, Day_of_week) %>%
+  summarise(Number_of_rides = n()
+            ,average_duration = mean(Ride_length)) %>%
+  arrange(User_type, Day_of_week)%>%
+  ggplot(aes(x = Day_of_week, y = Number_of_rides,fill = User_type)) +
+  geom_col(position = "dodge", colour = "black", width = 0.9) +
+  geom_text(
+    aes(label = round(Number_of_rides, 1)),
+    colour = "white", size = 2,
+    vjust = 1.5, position = position_dodge(.8)
+  ) + scale_fill_manual(values = c("#176fb3", "#0c3b5e"))
+
+
+# Number of rides per type each day
+Bike_update %>%
+  group_by(Day_of_week, Ride_type) %>%
+  summarise(Number_of_rides = n()
+            ,average_duration = mean(Ride_length)) %>%
+  arrange(Day_of_week, Ride_type)%>%
+  ggplot(aes(x = Day_of_week, y = Number_of_rides,fill = Ride_type)) +
+  geom_col(position = "dodge", colour = "black", width = 0.9) +
+  geom_text(
+    aes(label = round(Number_of_rides, 1)),
+    colour = "white", size = 2,
+    vjust = 1.5, position = position_dodge(.9)
+  ) + scale_fill_manual(values = c("#176fb3", "#0c3b5e", "#6a859e"))
+  
+  
+  #avg ride per bikes each day
+Bike_update %>%
+  group_by(Day_of_week, Ride_type) %>%
+  summarise(Number_of_rides = n()
+            ,average_duration = mean(Ride_length)) %>%
+  arrange(Day_of_week, Ride_type)%>%
+  ggplot(aes(x = Day_of_week, y = average_duration,fill = Ride_type)) +
+  geom_col(position = "dodge", colour = "black", width = 0.9) +
+  geom_text(
+    aes(label = round(average_duration, 1)),
+    colour = "white", size = 2,
+    vjust = 1.5, position = position_dodge(.8)
+  ) + scale_fill_manual(values = c("#176fb3", "#0c3b5e", "#6a859e"))
+  
+  #Number of ride per bikes each day
+Bike_update %>%
+  group_by(Day_of_week, Ride_type) %>%
+  summarise(Number_of_ride = n()
+            ,average_duration = mean(Ride_length)
+            ,max_duration = max(Ride_length)) %>%
+  arrange(Day_of_week, Ride_type)%>%
+  ggplot(aes(x = Day_of_week, y = Number_of_ride,fill = Ride_type)) +
+  geom_col(position = "dodge", colour = "black", width = 0.9) +
+  geom_text(
+    aes(label = round(Number_of_ride, 1)),
+    colour = "black", size = 2,
+    vjust = 1.5, position = position_dodge(.9)
+  ) + scale_fill_manual(values = c("#176fb3", "#0c3b5e", "#6a859e"))
+
+
+#Max of user per bikes each day
+Bike_update %>%
+  group_by(User_type, Ride_type) %>%
+  summarise(Number_of_user = n()
+            ,average_duration = mean(Ride_length)
+            ,max_duration = max(Ride_length)) %>%
+  arrange(User_type, Ride_type)%>%
+  ggplot(aes(x = Ride_type, y = max_duration,fill = User_type)) +
+  geom_bar(position="stack", stat="identity")+
+  geom_text(
+    aes(label = round(max_duration, 2)),
+    position = position_stack(vjust = .5),
+    colour = "white", size = 2) +
+  scale_fill_manual(values = c("#176fb3", "#0c3b5e" ))
+
+
+#Max of ride per bikes each day(per min)
+Bike_update %>%
+  group_by(Day_of_week, Ride_type) %>%
+  summarise(Number_of_user = n()
+            ,average_duration = mean(Ride_length)
+            ,max_duration = max(Ride_length)) %>%
+  arrange(Day_of_week, Ride_type)%>%
+  ggplot(aes(x = Day_of_week, y = max_duration,fill = Ride_type)) +
+  geom_bar(position="stack", stat="identity")+
+  geom_text(
+    aes(label = round(max_duration, 2)),
+    position = position_stack(vjust = .5),
+    colour = "white", size = 2) +
+  scale_fill_manual(values = c("#176fb3", "#0c3b5e","#6a859e" ))
+
+
+#--Days highest ride
+Bike_update %>%
+  group_by(Day_of_week) %>%
+  summarise(Number_of_rides = n()) %>%
+  arrange(Day_of_week)%>%
+  ggplot(aes(x =reorder(Day_of_week, -Number_of_rides), y = Number_of_rides,fill = Day_of_week)) +
+  geom_bar(position="stack", stat="identity")+
+  coord_flip() +
+  geom_text(
+    aes(label = round(Number_of_rides, 2)),
+    position = position_stack(vjust = .5),
+    colour ="black", size = 2) +
+  scale_fill_brewer()
+  scale_fill_manual(values = c("#176fb3", "#0c3b5e", "#6a859e","#76b5c5","","",""))
+  
+  
