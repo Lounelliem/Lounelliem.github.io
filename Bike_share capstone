@@ -1,0 +1,174 @@
+Used Access to convert CSV to DB file for all 12 months
+Created DB Cyclist > Imported 12 tables per month.
+ 
+--Combine 12 month table as Cyclist_UNION
+SELECT *
+INTO Cyclist_UNION
+FROM (
+SELECT *
+FROM Jan2022
+UNION ALL
+SELECT*
+FROM Feb2022
+UNION ALL
+SELECT*
+FROM Mar2022
+UNION ALL
+SELECT*
+FROM Apr2022
+UNION ALL
+SELECT*
+FROM May2022
+UNION ALL
+SELECT*
+FROM Jun2022
+UNION ALL
+SELECT*
+FROM Jul2022
+UNION ALL
+SELECT*
+FROM Aug2022
+UNION ALL
+SELECT*
+FROM Sep2022
+UNION ALL
+SELECT*
+FROM Oct2022
+UNION ALL
+SELECT*
+FROM Nov2022
+UNION ALL
+SELECT*
+FROM Dec2022
+)a
+
+--Add ride_length column
+ALTER TABLE Cyclist_Union
+ADD ride_length INT
+
+--Update ride_length
+Update Cyclist_UNION set ride_length = DATEDIFF(MINUTE, started_at, ended_at)
+
+Select *
+From Cyclist_UNION
+WHERE ride_length<0
+
+--Delete ride length less than zero minutes
+DELETE 
+FROM Cyclist_UNION
+WHERE ride_length<0
+
+SELECT *
+,DATENAME(WEEKDAY,started_at) As day_of_week
+FROM Cyclist_UNION;
+
+-- Adding Column day_of_week to Cyclist_UNION
+ALTER TABLE Cyclist_UNION
+ADD day_of_week VARCHAR(255)
+
+--Update day_of_week to weekday
+Update Cyclist_UNION set day_of_week = DATENAME(WEEKDAY,started_at)
+
+Created duplicate table of Cyclist_Union without Start_station_name, Start_station_id, end_station_name, end_station_id and naming it Cyclist_updated.
+-- Dropped table Start_station_name, Start_station_id, end_station_name, end_station_id and naming it Cyclist_updated.
+ALTER TABLE Cyclist_updated
+	DROP COLUMN
+		Start_station_name,
+		Start_station_id,
+		end_station_name,
+		end_station_id;
+Analyze Data with SQL
+--AVG, MAX, MIN and TOTAL per User type
+SELECT member_casual,
+MAX(ride_length) AS MAX_ride_per_min
+, AVG(ride_length) AS AVG_ride
+, MIN(ride_length) AS Min_ride
+, COUNT(ride_length) AS Total_ride
+FROM Cyclist_updated
+Group By member_casual
+
+member_casual	MAX_ride_per_min	AVG_ride	Min_ride	Total_ride
+casual		41387			29			0	2321986
+member		1560			12			0	3345648
+
+
+
+
+----AVG, MAX, MIN and TOTAL per day_of_week
+SELECT day_of_week,
+MAX(ride_length) AS MAX_ride_per_min
+, AVG(ride_length) AS AVG_ride
+, MIN(ride_length) AS Min_ride
+, COUNT(ride_length) AS Total_ride
+FROM Cyclist_updated
+Group By day_of_week
+
+day_of_week	MAX_ride_per_min	AVG_ride	Min_ride	Total_ride
+Monday		32035			18			0	751011
+Saturday	41387			23			0	916460
+Thursday	31024			17			0	841584
+Sunday		36258			24			0	776222
+Friday		32403			19			0	801784
+Wednesday	35821			16			0	798222
+Tuesday	31086			16			0	782351
+
+----AVG, MAX, MIN and TOTAL per bike type
+SELECT rideable_type,
+MAX(ride_length) AS MAX_ride_per_min
+, AVG(ride_length) AS AVG_ride
+, MIN(ride_length) AS Min_ride
+, COUNT(rideable_type) AS Total_ride
+FROM Cyclist_updated
+Group By rideable_type
+
+rideable_type	MAX_ride_per_min	AVG_ride	Min_ride	Total_ride
+docked_bike		41387			122		0	177474
+electric_bike		614			13		0	2888971
+classic_bike		1560			18		0	2601189
+
+----COUNT ride id and ride length per bike type
+SELECT  DISTINCT
+rideable_type
+,COUNT(DISTINCT ride_id) AS Total_ride
+,COUNT(ride_length) AS Total_ride_length
+FROM Cyclist_updated
+Group By rideable_type
+
+rideable_type	Total_ride	Total_ride_length
+electric_bike		2888969	2888971
+classic_bike		2601183	2601189
+docked_bike		177474		177474
+
+--Total ride  and duration per user type
+SELECT  DISTINCT
+member_casual
+,COUNT(DISTINCT ride_id) AS Total_ride
+,AVG(ride_length) AS AVG_ride_length
+,MAX(day_of_week) Max_Day_of_week
+FROM Cyclist_updated
+Group By member_casual
+
+member_casual	Total_ride	AVG_ride_length	Max_Day_of_week
+casual		2321983		29		Wednesday
+member		3345641		12		Wednesday
+
+
+--Days highest ride
+SELECT  
+day_of_week
+,COUNT(day_of_week) AS Total_per_day
+FROM Cyclist_updated
+Group By day_of_week 
+Order by total_per_day Desc
+
+day_of_week	Total_per_day
+Saturday	916460
+Thursday	841584
+Friday		801784
+Wednesday	798222
+Tuesday	782351
+Sunday		776222
+Monday		751011
+
+
+Continue with R to Visualize and 
